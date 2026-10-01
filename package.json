@@ -1,15 +1,15 @@
 {
   "name": "eomeg-downloader-direct",
-  "version": "4.0.0",
+  "version": "4.0.1",
   "private": true,
   "description": "Eomeg public-media downloader for YouTube and Instagram on Vercel.",
   "engines": {
     "node": "24.x"
   },
   "scripts": {
-    "build": "node scripts/install-ytdlp.js",
+    "build": "node scripts/vercel-build.js",
     "dev": "node server.js",
-    "check": "node --check app.js && node --check lib/media.js && node --check lib/instagram.js && node --check api/analyze/index.js && node --check api/download/index.js && node --check api/health/index.js"
+    "check": "node --check app.js && node --check lib/media.js && node --check lib/instagram.js && node --check api/analyze/index.js && node --check api/download/index.js && node --check api/health/index.js && node --check scripts/vercel-build.js"
   },
   "dependencies": {
     "ffmpeg-static": "5.2.0"
