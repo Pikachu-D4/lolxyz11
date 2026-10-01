@@ -58,7 +58,7 @@ async function timeFetch(url) {
 
 async function binaryVersion(binary, args) {
   try {
-    const r = await execFileAsync(binary, args || ['--version'], { timeout: 10000, maxBuffer: 1024 * 1024 });
+    const r = await execFileAsync(binary, args || ['--version'], { timeout: 4000, maxBuffer: 1024 * 1024 });
     return { ok: true, version: String(r.stdout || '').trim() };
   } catch (error) {
     return { ok: false, error: redact(error && (error.stderr || error.message)) };
@@ -68,7 +68,7 @@ async function binaryVersion(binary, args) {
 async function runYtDlp(url, embedded) {
   const args = [
     '--dump-single-json', '--skip-download', '--no-warnings', '--ignore-config',
-    '--socket-timeout', '15', '--retries', '1',
+    '--socket-timeout', '8', '--retries', '0',
     '--js-runtimes', 'node:' + process.execPath,
     '--remote-components', 'ejs:github'
   ];
@@ -76,7 +76,7 @@ async function runYtDlp(url, embedded) {
   args.push('--', url);
   const started = Date.now();
   try {
-    const r = await execFileAsync(YTDLP, args, { timeout: 22000, maxBuffer: 12 * 1024 * 1024 });
+    const r = await execFileAsync(YTDLP, args, { timeout: 15000, maxBuffer: 8 * 1024 * 1024 });
     const raw = String(r.stdout || '').trim();
     let info = null;
     try { info = JSON.parse(raw); } catch {}
