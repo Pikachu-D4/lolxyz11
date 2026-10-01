@@ -26,6 +26,9 @@ module.exports = async (req, res) => {
 
 function friendlyError(error, url) {
   const msg = String(error?.stderr || error?.message || '');
+  if (error?.code === 'FREE_YOUTUBE_FAILED') {
+    return 'The free public YouTube extraction services are temporarily unavailable. Please try again in a few seconds.';
+  }
 
   // "Sign in to confirm you're not a bot" is a YouTube anti-automation
   // response and must not be presented as proof that the media is private.
