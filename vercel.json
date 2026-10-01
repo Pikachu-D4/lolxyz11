@@ -1,12 +1,10 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "version": 2,
   "framework": null,
   "buildCommand": "npm run build",
   "functions": {
     "api/**/*.js": {
-      "runtime": "nodejs24.x",
-      "maxDuration": 300,
+      "maxDuration": 60,
       "supportsCancellation": true,
       "includeFiles": "bin/yt-dlp,node_modules/ffmpeg-static/**"
     }
