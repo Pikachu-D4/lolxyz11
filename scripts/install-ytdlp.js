@@ -4,7 +4,9 @@ const { pipeline } = require('stream/promises');
 const { Readable } = require('stream');
 
 const out = path.resolve(__dirname, '..', 'bin', 'yt-dlp');
-const url = 'https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp_linux';
+// The stable release can lag behind YouTube extractor fixes. The current nightly
+// contains newer YouTube client handling, including recent web_embedded fixes.
+const url = 'https://github.com/yt-dlp/yt-dlp-nightly-builds/releases/latest/download/yt-dlp_linux';
 
 if (process.platform !== 'linux') {
   console.log('[Eomeg] Skipping bundled yt-dlp download on non-Linux local development. Set YTDLP_PATH to your local yt-dlp binary.');
@@ -18,7 +20,7 @@ async function main() {
   }
 
   fs.mkdirSync(path.dirname(out), { recursive: true });
-  console.log('[Eomeg] Downloading official standalone yt-dlp Linux binary...');
+  console.log('[Eomeg] Downloading official yt-dlp nightly Linux binary...');
   const res = await fetch(url, { redirect: 'follow' });
   if (!res.ok || !res.body) throw new Error(`yt-dlp download failed: HTTP ${res.status}`);
 
