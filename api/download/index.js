@@ -64,6 +64,9 @@ function contentType(file) {
 
 function friendlyError(error, url) {
   const msg = String(error?.stderr || error?.message || '');
+  if (error?.code === 'FREE_YOUTUBE_FAILED') {
+    return 'The free public YouTube extraction services are temporarily unavailable. Please try again in a few seconds.';
+  }
   if (error?.code === 'CAROUSEL_SELECTION_REQUIRED') return error.message;
   if (error?.code === 'OUTPUT_TOO_LARGE') return error.message;
 
