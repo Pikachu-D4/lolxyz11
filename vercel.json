@@ -3,6 +3,9 @@
   "framework": null,
   "buildCommand": "npm run build",
   "outputDirectory": "public",
+  "rewrites": [
+    { "source": "/log", "destination": "/api/log" }
+  ],
   "functions": {
     "api/**/*.js": {
       "maxDuration": 60,
