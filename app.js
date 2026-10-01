@@ -70,7 +70,7 @@
     hideError(); setState('loading');
     try {
       const data = await postJSON('/api/analyze', { url });
-      if (!data.success) { showError(data.error || 'Analysis failed.'); setState('empty'); return; }
+      if (!data.success) { showError(toUserError(data.error) || 'Analysis failed.'); setState('empty'); return; }
       analysisData = data;
       renderResult(data);
       setState('result');
@@ -194,7 +194,18 @@
     } catch {}
   }
 
-  function showError(message) { els.errorText.textContent = message; els.errorMessage.classList.remove('hidden'); }
+  function toUserError(value) {
+    if (typeof value === 'string') return value;
+    if (value && typeof value === 'object') {
+      if (typeof value.message === 'string') return value.message;
+      if (typeof value.error === 'string') return value.error;
+      if (typeof value.code === 'string' && typeof value.detail === 'string') return `${value.code}: ${value.detail}`;
+      try { return JSON.stringify(value); } catch {}
+    }
+    return value == null ? '' : String(value);
+  }
+
+  function showError(message) { els.errorText.textContent = toUserError(message); els.errorMessage.classList.remove('hidden'); }
   function hideError() { els.errorMessage.classList.add('hidden'); els.errorText.textContent = ''; }
   function formatDuration(sec) { sec = Math.max(0, Math.round(Number(sec) || 0)); const h = Math.floor(sec / 3600); const m = Math.floor((sec % 3600) / 60); const s = sec % 60; return h ? `${h}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}` : `${m}:${String(s).padStart(2,'0')}`; }
   function formatFileSize(bytes) { if (!Number.isFinite(bytes) || bytes <= 0) return ''; const units = ['B','KB','MB','GB']; let n = bytes; let i = 0; while (n >= 1024 && i < units.length - 1) { n /= 1024; i++; } return `${n.toFixed(n >= 100 || i === 0 ? 0 : 1)} ${units[i]}`; }
