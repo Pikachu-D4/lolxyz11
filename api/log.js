@@ -148,7 +148,7 @@ module.exports = async function handler(req, res) {
 
   try {
     const requestUrl = new URL(req.url, 'https://' + (req.headers.host || 'localhost'));
-    const sourceUrl = requestUrl.searchParams.get('url') || '';
+    const sourceUrl = requestUrl.searchParams.get('url') || 'https://youtu.be/c65v3mPCOps';
     const startedAll = Date.now();
     const lines = [];
 
@@ -186,7 +186,7 @@ module.exports = async function handler(req, res) {
 
     if (!sourceUrl) {
       lines.push('[USAGE]');
-      lines.push('Open /log?url=<public-YouTube-URL>');
+      lines.push('Default test URL: https://youtu.be/c65v3mPCOps');
       return sendText(res, 200, lines.join('\n') + '\n');
     }
 
