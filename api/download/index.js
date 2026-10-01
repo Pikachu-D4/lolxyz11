@@ -48,7 +48,7 @@ module.exports = async (req, res) => {
     console.error('[Eomeg download]', error);
     const code = error?.code;
     const status = code === 'CAROUSEL_SELECTION_REQUIRED' ? 409 : code === 'OUTPUT_TOO_LARGE' ? 413 : 502;
-    return res.status(status).json({ success: false, error: friendlyError(error) });
+    return res.status(status).json({ success: false, error: friendlyError(error, sourceUrl) });
   }
 };
 
@@ -61,11 +61,19 @@ function contentType(file) {
   })[ext] || 'application/octet-stream';
 }
 
-function friendlyError(error) {
+function friendlyError(error, url) {
   const msg = String(error?.stderr || error?.message || '');
   if (error?.code === 'CAROUSEL_SELECTION_REQUIRED') return error.message;
   if (error?.code === 'OUTPUT_TOO_LARGE') return error.message;
-  if (/private|login|sign in|authentication/i.test(msg)) return 'This media is private or requires authentication.';
+
+  if (/sign in to confirm.*not a bot|LOGIN_REQUIRED/i.test(msg) && /youtube\.com|youtu\.be/i.test(url)) {
+    return 'YouTube is currently blocking automated requests from this server. The video is not necessarily private; please try again later.';
+  }
+
+  if (/this video is private|private video|members-only|login required for this video|age.?restricted/i.test(msg)) {
+    return 'This media requires access that this server does not have.';
+  }
+
   if (/unsupported|not a valid url/i.test(msg)) return 'This URL is not currently supported.';
   if (/timeout|timed out/i.test(msg)) return 'The download took too long. Try a shorter or lower-quality version.';
   return 'We could not download this media. Please try again.';
