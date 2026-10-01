@@ -56,7 +56,7 @@ Long downloads can still fail when extraction, transcoding, upstream rate limits
 4. Deploy.
 5. Open `/api/health` on the deployed site.
 
-The health endpoint reports the detected Node.js, yt-dlp, and FFmpeg versions.
+The health endpoint reports the detected Node.js, yt-dlp, and FFmpeg versions. For troubleshooting, `/log?url=<public-YouTube-URL>` runs a safe, copyable diagnostics report.
 
 ## Local development on Windows/macOS
 
