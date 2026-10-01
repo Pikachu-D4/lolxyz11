@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Eomeg Downloader — Download your media. Your way.</title>
+  <meta name="description" content="Paste a YouTube or Instagram link and download in your preferred quality. AI-powered upscaling available." />
+  <meta name="theme-color" content="#6c5ce7" />
+
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⬇</text></svg>" />
+  <link rel="stylesheet" href="/styles.css" />
+</head>
+<body>
+  <div class="app-container">
+
+    <!-- ─── NAV ───────────────────────────────────────────── -->
+    <nav class="nav" role="navigation" aria-label="Main navigation">
+      <div class="nav-brand">
+        <div class="nav-logo" aria-hidden="true">E</div>
+        <span class="nav-name">Eomeg</span>
+      </div>
+      <div class="nav-actions">
+        <button class="history-btn" id="historyToggle" aria-label="Recent downloads" title="Recent Downloads">
+          <span aria-hidden="true">📋</span>
+          <span class="badge hidden" id="historyBadge">0</span>
+        </button>
+        <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme" title="Toggle Theme">
+          <span id="themeIcon" aria-hidden="true">🌙</span>
+        </button>
+      </div>
+    </nav>
+
+    <!-- ─── MAIN ──────────────────────────────────────────── -->
+    <main class="main-content" role="main">
+
+      <!-- Hero -->
+      <section class="hero" id="heroSection">
+        <h1 class="hero-title">Download your media.<br/>Your way.</h1>
+        <p class="hero-subtitle">Paste a YouTube or Instagram link and choose the quality you need.</p>
+      </section>
+
+      <!-- URL Input -->
+      <section class="url-input-section" aria-label="Media URL input">
+        <div class="url-input-wrapper" id="urlInputWrapper">
+          <div class="url-input-inner">
+            <span class="url-input-icon" aria-hidden="true">🔗</span>
+            <label for="urlInput" class="visually-hidden">Media URL</label>
+            <input
+              type="url"
+              id="urlInput"
+              class="url-input"
+              placeholder="Paste YouTube / Instagram URL"
+              autocomplete="off"
+              spellcheck="false"
+              aria-describedby="urlHint"
+            />
+            <button class="url-clear-btn" id="clearBtn" aria-label="Clear URL" title="Clear">✕</button>
+          </div>
+          <button class="analyze-btn" id="analyzeBtn" type="button">
+            <span id="analyzeBtnText">Analyze</span>
+          </button>
+        </div>
+        <p class="platforms-hint" id="urlHint">
+          <span>YouTube</span><span>•</span>
+          <span>Shorts</span><span>•</span>
+          <span>Instagram</span><span>•</span>
+          <span>Reels</span><span>•</span>
+          <span>Posts</span>
+        </p>
+      </section>
+
+      <!-- Error -->
+      <div class="error-message hidden" id="errorMessage" role="alert">
+        <span class="error-icon" aria-hidden="true">⚠️</span>
+        <span id="errorText"></span>
+      </div>
+
+      <!-- Demo Notice -->
+      <div class="demo-notice hidden" id="demoNotice" role="status">
+        <span aria-hidden="true">ℹ️</span>
+        <span>Demo mode — no real media provider configured. Results are simulated.</span>
+      </div>
+
+      <!-- Result Section -->
+      <section class="result-section hidden" id="resultSection" aria-label="Analysis results">
+        <!-- Skeleton (shown during loading) -->
+        <div id="skeletonCard" class="hidden">
+          <div class="skeleton-thumbnail"></div>
+          <div style="padding: 1.5rem;">
+            <div style="height:14px;width:40%;background:var(--bg-3);border-radius:8px;margin-bottom:12px;animation:skeleton-pulse 1.5s ease-in-out infinite;background-size:200% 100%;background-image:linear-gradient(90deg,var(--bg-3) 0%,var(--bg-2) 50%,var(--bg-3) 100%)"></div>
+            <div style="height:18px;width:80%;background:var(--bg-3);border-radius:8px;margin-bottom:16px;animation:skeleton-pulse 1.5s ease-in-out infinite;background-size:200% 100%;background-image:linear-gradient(90deg,var(--bg-3) 0%,var(--bg-2) 50%,var(--bg-3) 100%);animation-delay:0.1s"></div>
+            <div style="height:52px;width:100%;background:var(--bg-3);border-radius:12px;margin-bottom:8px;animation:skeleton-pulse 1.5s ease-in-out infinite;background-size:200% 100%;background-image:linear-gradient(90deg,var(--bg-3) 0%,var(--bg-2) 50%,var(--bg-3) 100%);animation-delay:0.2s"></div>
+            <div style="height:52px;width:100%;background:var(--bg-3);border-radius:12px;animation:skeleton-pulse 1.5s ease-in-out infinite;background-size:200% 100%;background-image:linear-gradient(90deg,var(--bg-3) 0%,var(--bg-2) 50%,var(--bg-3) 100%);animation-delay:0.3s"></div>
+          </div>
+        </div>
+
+        <!-- Real Result Card -->
+        <div class="result-card hidden" id="resultCard">
+          <!-- Thumbnail -->
+          <div class="result-thumbnail-wrap" id="thumbnailWrap">
+            <img id="resultThumbnail" src="" alt="Media thumbnail" loading="lazy" />
+            <span class="platform-badge" id="platformBadge"></span>
+            <span class="duration-badge hidden" id="durationBadge"></span>
+          </div>
+
+          <!-- Info -->
+          <div class="result-info">
+            <div class="result-meta" id="resultMeta"></div>
+            <h2 class="result-title" id="resultTitle"></h2>
+
+            <!-- Format Filters & List -->
+            <div class="formats-header">
+              <span class="formats-title">Available Formats</span>
+              <div class="format-filters" id="formatFilters"></div>
+            </div>
+            <div class="formats-list" id="formatsList" role="list" aria-label="Available download formats"></div>
+
+            <!-- Upscale -->
+            <div class="upscale-section hidden" id="upscaleSection">
+              <div class="upscale-header">
+                <h3>🚀 AI Upscale <span class="ai-badge">AI</span></h3>
+              </div>
+              <p class="upscale-description">
+                Enhance video resolution using AI super-resolution. This creates an AI-enhanced version — it does not recreate genuine original detail.
+              </p>
+              <div class="upscale-source" id="upscaleSource"></div>
+              <div class="upscale-targets" id="upscaleTargets" role="radiogroup" aria-label="Target upscale resolution"></div>
+              <button class="start-upscale-btn" id="startUpscaleBtn" disabled>
+                <span id="upscaleBtnText">Select a target resolution</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Processing State -->
+        <div class="result-card hidden" id="processingCard">
+          <div class="processing-overlay">
+            <h3 id="processingTitle">Processing your download…</h3>
+            <div class="processing-stages" id="processingStages"></div>
+            <div class="progress-bar-track">
+              <div class="progress-bar-fill" id="progressBarFill" style="width: 0%"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Download Ready State -->
+        <div class="result-card hidden" id="readyCard">
+          <div class="download-ready">
+            <div class="success-icon" aria-hidden="true">✓</div>
+            <h3>Your download is ready</h3>
+            <div class="download-ready-actions">
+              <a class="final-download-btn" id="finalDownloadBtn" href="#" download aria-label="Download file">
+                ⬇️ <span id="finalDownloadLabel">Download MP4</span>
+              </a>
+              <button class="another-quality-btn" id="anotherQualityBtn">Choose another quality</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- ─── FOOTER ────────────────────────────────────────── -->
+    <footer class="footer" role="contentinfo">
+      <div class="footer-brand">Eomeg Downloader</div>
+      <p>Download and enhance publicly accessible media.</p>
+      <p class="footer-legal">Use this service only for media you have permission to download or reuse.</p>
+      <p class="footer-legal">Downloads are processed on demand; large files may depend on your Vercel plan and platform response time.</p>
+    </footer>
+
+  </div>
+
+  <!-- ─── HISTORY PANEL ──────────────────────────────────── -->
+  <div class="history-backdrop" id="historyBackdrop"></div>
+  <aside class="history-panel" id="historyPanel" role="complementary" aria-label="Download history">
+    <div class="history-panel-header">
+      <h3>Recent Downloads</h3>
+      <div style="display:flex;gap:8px;">
+        <button class="history-clear-btn" id="historyClearBtn" aria-label="Clear history" title="Clear history">🗑️</button>
+        <button class="history-close-btn" id="historyCloseBtn" aria-label="Close history" title="Close">✕</button>
+      </div>
+    </div>
+    <div class="history-list" id="historyList"></div>
+  </aside>
+
+  <script src="/app.js"></script>
+</body>
+</html>
