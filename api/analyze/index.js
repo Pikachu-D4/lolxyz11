@@ -30,10 +30,7 @@ function friendlyError(error, url) {
   // "Sign in to confirm you're not a bot" is a YouTube anti-automation
   // response and must not be presented as proof that the media is private.
   if (/sign in to confirm.*not a bot|LOGIN_REQUIRED/i.test(msg) && /youtube\.com|youtu\.be/i.test(url)) {
-    if (!String(process.env.EASYDOWN_API_KEY || '').trim()) {
-      return 'YouTube is blocking direct requests from this Vercel server. Add EASYDOWN_API_KEY in Vercel Environment Variables to use the hosted extraction provider.';
-    }
-    return 'The hosted media provider could not process this public YouTube URL right now. Please try again shortly.';
+    return 'Free YouTube extraction services are temporarily unavailable, and direct extraction from this Vercel server is being blocked by YouTube. Please try again shortly.';
   }
 
   // Only classify explicit private/auth-required media as private.
