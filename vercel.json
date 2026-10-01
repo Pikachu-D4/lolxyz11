@@ -4,7 +4,8 @@
   "buildCommand": "npm run build",
   "outputDirectory": "public",
   "rewrites": [
-    { "source": "/log", "destination": "/api/log" }
+    { "source": "/log", "destination": "/api/log" },
+    { "source": "/log/:path*", "destination": "/api/log" }
   ],
   "functions": {
     "api/**/*.js": {
