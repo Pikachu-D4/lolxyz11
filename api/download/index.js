@@ -68,10 +68,7 @@ function friendlyError(error, url) {
   if (error?.code === 'OUTPUT_TOO_LARGE') return error.message;
 
   if (/sign in to confirm.*not a bot|LOGIN_REQUIRED/i.test(msg) && /youtube\.com|youtu\.be/i.test(url)) {
-    if (!String(process.env.EASYDOWN_API_KEY || '').trim()) {
-      return 'YouTube is blocking direct requests from this Vercel server. Add EASYDOWN_API_KEY in Vercel Environment Variables to use the hosted extraction provider.';
-    }
-    return 'The hosted media provider could not process this public YouTube URL right now. Please try again shortly.';
+    return 'Free YouTube extraction services are temporarily unavailable, and direct extraction from this Vercel server is being blocked by YouTube. Please try again shortly.';
   }
 
   if (/this video is private|private video|members-only|login required for this video|age.?restricted/i.test(msg)) {
